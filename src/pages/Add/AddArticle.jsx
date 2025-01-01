@@ -39,7 +39,7 @@ const AddArticle = () => {
     // axios.post("http://localhost:3000/Articles", newArticle);
     axios.post('http://103.60.212.74:8080/login/articles',newArticle,{headers:headers})
     setSubmittedArticles([newArticle, ...submittedArticles]);
-    // setFormData({ title: '', content: '' }); // Reset form fields
+    setFormData({ title: '', content: '' });
   };
 
   return (

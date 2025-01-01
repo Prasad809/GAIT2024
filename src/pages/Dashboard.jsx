@@ -131,7 +131,7 @@ function Dashboard() {
   return (
     <div className="container mt-4">
       <h1>Dashboard</h1>
-      <h2>Previous Games</h2>
+      {/* <h2>Previous Games</h2>
    
       {games.length >0 ? games.map((game)=>(
         <div className="row mb-3" key={game.id}>
@@ -155,7 +155,7 @@ function Dashboard() {
           </div>
         </div>
       </div>
-      )):null}
+      )):null} */}
       <p style={{ fontSize: "20px", color: "red" }}>Current & Upcoming Events</p>
 
       <h2>Today's Events</h2>

@@ -4,7 +4,6 @@ import Loader from "../components/Loader";
 
 function Birthdays() {
   const [list, setList] = useState([]);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     axios
@@ -18,9 +17,6 @@ function Birthdays() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       })
-      .finally(() => {
-        setLoading(false);
-      });
   }, []);
 
 const today = new Date();
@@ -49,7 +45,7 @@ upcomingEvent.sort((a, b) => {
   return aMonthDay.localeCompare(bMonthDay);
 });
 
-  if (loading) return <Loader />;
+  if (!upcomingEvent.length > 0 && !presentEvent.length > 0) return <Loader />;
 
   return (
     <div className="container mt-4">
