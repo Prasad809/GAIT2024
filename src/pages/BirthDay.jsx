@@ -4,7 +4,7 @@ import Loader from "../components/Loader";
 
 function Birthdays() {
   const [list, setList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     axios
@@ -12,6 +12,7 @@ function Birthdays() {
       .get('http://103.60.212.74:8080/login/birthday')
       .then((response) => {
         const data = response.data.result?.data || [];
+        console.log("data",data)
         setList(data);
       })
       .catch((error) => {
@@ -22,32 +23,31 @@ function Birthdays() {
       });
   }, []);
 
-  const today = new Date();
-  const currentDay = today.getDate();
-  const currentMonth = today.getMonth() + 1;
-  const currentYear = today.getFullYear();
+const today = new Date();
+const todayMonthDay = `${today.getMonth() + 1}-${today.getDate()}`;
 
-  const previousBirthdays = list.filter((user) => {
-    if (!user.date_of_birth) return false;
-    
-    const birthDate = new Date(user.date_of_birth);
-    const birthMonth = birthDate.getMonth() + 1;
-    const birthDay = birthDate.getDate();
-    return (
-      (birthMonth < currentMonth) || 
-      (birthMonth === currentMonth && birthDay < currentDay)
-    );
-  }).sort((a, b) => {
-    const dayA = new Date(a.date_of_birth).getDate();
-    const dayB = new Date(b.date_of_birth).getDate();
-    return dayB - dayA;  
-  });
-  const todayBirthdays = list.filter((user) => {
-    const birthDate = new Date(user.date_of_birth);
-    const birthDay = birthDate.getDate();
-    const birthMonth = birthDate.getMonth() + 1;
-    return birthMonth === currentMonth && birthDay === currentDay;
-  });
+const presentEvent = [];
+const upcomingEvent = [];
+
+list.forEach(person => {
+  const dob = new Date(person.date_of_birth);
+  const dobMonthDay = `${dob.getMonth() + 1}-${dob.getDate()}`;
+
+  if (dobMonthDay === todayMonthDay) {
+    presentEvent.push(person);
+  } else {
+    upcomingEvent.push(person);
+  }
+});
+upcomingEvent.sort((a, b) => {
+  const dobA = new Date(a.date_of_birth);
+  const dobB = new Date(b.date_of_birth);
+  
+  const aMonthDay = `${dobA.getMonth() + 1}-${dobA.getDate()}`;
+  const bMonthDay = `${dobB.getMonth() + 1}-${dobB.getDate()}`;
+  
+  return aMonthDay.localeCompare(bMonthDay);
+});
 
   if (loading) return <Loader />;
 
@@ -56,9 +56,9 @@ function Birthdays() {
   
       <div className="mb-4">
         <h1 className="display-4 mb-2">Today's Birthdays</h1>
-        {todayBirthdays.length > 0 ? (
+        {presentEvent.length > 0 ? (
           <div className="row">
-            {todayBirthdays.map((user) => (
+            {presentEvent.map((user) => (
               <div key={user.uuid} className="col-12 mb-4">
                 <div className="card">
                   <div className="card-body d-flex">
@@ -84,9 +84,9 @@ function Birthdays() {
       </div>
       <div className="mb-4 mt-5">
         <h1 className="display-4 mb-2">Previous Birthdays</h1>
-        {previousBirthdays.length > 0 ? (
+        {upcomingEvent.length > 0 ? (
           <div className="row">
-            {previousBirthdays.map((user) => {
+            {upcomingEvent.map((user) => {
               const birthDate = new Date(user.date_of_birth);
               const birthDay = birthDate.getDate();
               return (
@@ -120,3 +120,5 @@ function Birthdays() {
 }
 
 export default Birthdays;
+
+
